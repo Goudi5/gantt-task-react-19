@@ -15,6 +15,7 @@ creating a comprehensive solution for managing Gantt charts.
 - **Performance Improvements**: Optimized rendering to handle large datasets efficiently, ensuring smooth user
   interactions.
 - **Enhanced Customization**: Allows for more extensive task styling options to match brand-specific requirements.
+- **React 19 Compatibility**: Full support for React 19 with updated TypeScript definitions and peer dependencies.
 - **TypeScript Integration**: Improved type definitions for safer and more efficient development workflows.
 - **Responsive Design**: Improved mobile and tablet support for better usability across different devices.
 - **Dependency Management**: Enhanced task dependency features, allowing for more complex project planning scenarios.

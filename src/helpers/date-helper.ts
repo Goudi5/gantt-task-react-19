@@ -17,6 +17,73 @@ import startOfQuarter from "date-fns/startOfQuarter";
 import { TaskOrEmpty, ViewMode } from "../types/public-types";
 import { getDatesDiff } from "./get-dates-diff";
 
+type DateHelperScales =
+  | "year"
+  | "month"
+  | "day"
+  | "hour"
+  | "minute"
+  | "second"
+  | "millisecond";
+
+const intlDTCache: { [key: string]: Intl.DateTimeFormat } = {};
+export const getCachedDateTimeFormat = (
+  locString: string | string[],
+  opts: Intl.DateTimeFormatOptions = {}
+): Intl.DateTimeFormat => {
+  const key = JSON.stringify([locString, opts]);
+  let dtf = intlDTCache[key];
+  if (!dtf) {
+    dtf = new Intl.DateTimeFormat(locString, opts);
+    intlDTCache[key] = dtf;
+  }
+  return dtf;
+};
+
+export const addToDate = (
+  date: Date,
+  quantity: number,
+  scale: DateHelperScales
+) => {
+  const newDate = new Date(
+    date.getFullYear() + (scale === "year" ? quantity : 0),
+    date.getMonth() + (scale === "month" ? quantity : 0),
+    date.getDate() + (scale === "day" ? quantity : 0),
+    date.getHours() + (scale === "hour" ? quantity : 0),
+    date.getMinutes() + (scale === "minute" ? quantity : 0),
+    date.getSeconds() + (scale === "second" ? quantity : 0),
+    date.getMilliseconds() + (scale === "millisecond" ? quantity : 0)
+  );
+  return newDate;
+};
+
+export const startOfDate = (date: Date, scale: DateHelperScales) => {
+  const scores = [
+    "millisecond",
+    "second",
+    "minute",
+    "hour",
+    "day",
+    "month",
+    "year",
+  ];
+
+  const shouldReset = (_scale: DateHelperScales) => {
+    const maxScore = scores.indexOf(scale);
+    return scores.indexOf(_scale) <= maxScore;
+  };
+  const newDate = new Date(
+    date.getFullYear(),
+    shouldReset("year") ? 0 : date.getMonth(),
+    shouldReset("month") ? 1 : date.getDate(),
+    shouldReset("day") ? 0 : date.getHours(),
+    shouldReset("hour") ? 0 : date.getMinutes(),
+    shouldReset("minute") ? 0 : date.getSeconds(),
+    shouldReset("second") ? 0 : date.getMilliseconds()
+  );
+  return newDate;
+};
+
 export const ganttDateRange = (
   tasks: readonly TaskOrEmpty[],
   viewMode: ViewMode,
