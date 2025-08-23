@@ -1,285 +1,305 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Gantt } from './index';
-import { Task, ViewMode, Dependency, OnRelationChange, DateExtremity } from './types/public-types';
+import { Task, ViewMode, Dependency, OnChangeTasks, TaskOrEmpty, Column } from './types/public-types';
+import { TitleColumn, DateStartColumn, DateEndColumn, DependenciesColumn } from './index';
 
-// Sample tasks data with proper hierarchy using parent property
-const initialTasks: Task[] = [
+// Sample tasks data with proper hierarchy using parent property (based on Storybook helper)
+const currentDate = new Date();
+const initialTasks: TaskOrEmpty[] = [
   {
-    id: "1",
-    name: "Planning Phase",
-    start: new Date(2024, 0, 1),
-    end: new Date(2024, 0, 15),
-    progress: 100,
-    type: "project",
-    isDisabled: false,
-    hideChildren: false,
-  },
-  {
-    id: "1.1", 
-    name: "Requirements Gathering",
-    start: new Date(2024, 0, 1),
-    end: new Date(2024, 0, 5),
-    progress: 100,
-    type: "task",
-    parent: "1",
-    isDisabled: false,
-  },
-  {
-    id: "1.2", 
-    name: "Research & Analysis",
-    start: new Date(2024, 0, 6),
-    end: new Date(2024, 0, 15),
-    progress: 80,
-    type: "task",
-    parent: "1",
-    dependencies: [
-      {
-        sourceId: "1.1",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      }
-    ],
-    isDisabled: false,
-  },
-  {
-    id: "2",
-    name: "Design Phase", 
-    start: new Date(2024, 0, 16),
-    end: new Date(2024, 0, 30),
-    progress: 50,
-    type: "project",
-    dependencies: [
-      {
-        sourceId: "1",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      }
-    ],
-    isDisabled: false,
-    hideChildren: false,
-  },
-  {
-    id: "2.1",
-    name: "UI/UX Design",
-    start: new Date(2024, 0, 16),
-    end: new Date(2024, 0, 25),
-    progress: 70,
-    type: "task",
-    parent: "2",
-    isDisabled: false,
-  },
-  {
-    id: "2.2",
-    name: "Database Design",
-    start: new Date(2024, 0, 20),
-    end: new Date(2024, 0, 30),
-    progress: 30,
-    type: "task",
-    parent: "2",
-    dependencies: [
-      {
-        sourceId: "2.1",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      }
-    ],
-    isDisabled: false,
-  },
-  {
-    id: "3",
-    name: "Development",
-    start: new Date(2024, 1, 1),
-    end: new Date(2024, 2, 15),
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 15),
+    name: "Project Sample",
+    id: "ProjectSample",
     progress: 25,
     type: "project",
+    hideChildren: false
+  },
+  {
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 2, 12, 28),
+    name: "Idea",
+    id: "Idea",
+    progress: 45,
+    type: "task",
+    parent: "ProjectSample"
+  },
+  {
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 2),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 4, 0, 0),
+    name: "Research",
+    id: "Research",
+    progress: 25,
     dependencies: [
       {
-        sourceId: "2",
+        sourceId: "Idea",
         sourceTarget: "endOfTask",
         ownTarget: "startOfTask"
       }
     ],
-    isDisabled: false,
-    hideChildren: false,
+    type: "task",
+    parent: "ProjectSample"
   },
   {
-    id: "3.1",
-    name: "Frontend Development",
-    start: new Date(2024, 1, 1),
-    end: new Date(2024, 1, 20),
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 4),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8, 0, 0),
+    name: "Discussion with team",
+    id: "Discussion",
+    progress: 10,
+    dependencies: [
+      {
+        sourceId: "Research",
+        sourceTarget: "endOfTask",
+        ownTarget: "startOfTask"
+      }
+    ],
+    type: "task",
+    parent: "ProjectSample"
+  },
+  {
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 10, 0, 0),
+    name: "Developing",
+    id: "developing",
+    progress: 50,
+    dependencies: [
+      {
+        sourceId: "Discussion",
+        sourceTarget: "endOfTask",
+        ownTarget: "startOfTask"
+      }
+    ],
+    type: "project",
+    parent: "ProjectSample",
+    hideChildren: false
+  },
+  {
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 9),
+    name: "Code",
+    id: "code",
+    type: "task",
     progress: 40,
-    type: "task",
-    parent: "3",
-    isDisabled: false,
+    parent: "developing"
   },
   {
-    id: "3.2",
-    name: "Backend Development",
-    start: new Date(2024, 1, 5),
-    end: new Date(2024, 2, 10),
-    progress: 20,
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8, 12, 0),
+    name: "Frontend",
+    id: "frontend",
     type: "task",
-    parent: "3",
-    dependencies: [
-      {
-        sourceId: "3.1",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      }
-    ],
-    isDisabled: false,
+    progress: 40,
+    parent: "code",
+    assignees: ["Bob", "Peter"]
   },
   {
-    id: "3.3",
-    name: "Integration",
-    start: new Date(2024, 2, 11),
-    end: new Date(2024, 2, 15),
-    progress: 0,
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8, 12, 0),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 9),
+    name: "Backend",
+    id: "backend",
     type: "task",
-    parent: "3",
-    dependencies: [
-      {
-        sourceId: "3.1",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      },
-      {
-        sourceId: "3.2",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      }
-    ],
-    isDisabled: false,
+    progress: 40,
+    parent: "code",
+    assignees: ["Marc"]
   },
   {
-    id: "4",
-    name: "Testing",
-    start: new Date(2024, 2, 16),
-    end: new Date(2024, 2, 30), 
-    progress: 0,
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 10),
+    name: "Review",
+    id: "review",
     type: "task",
-    dependencies: [
-      {
-        sourceId: "3",
-        sourceTarget: "endOfTask",
-        ownTarget: "startOfTask"
-      }
-    ],
-    isDisabled: false,
+    progress: 70,
+    parent: "developing"
   },
   {
-    id: "5",
-    name: "Deployment",
-    start: new Date(2024, 3, 1),
-    end: new Date(2024, 3, 7),
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 15),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 15, 23, 59),
+    name: "Release",
+    id: "release",
     progress: 0,
     type: "milestone",
     dependencies: [
       {
-        sourceId: "4",
+        sourceId: "review",
         sourceTarget: "endOfTask",
         ownTarget: "startOfTask"
       }
     ],
-    isDisabled: false,
+    parent: "ProjectSample"
+  },
+  {
+    start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 18),
+    end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 19),
+    name: "Party Time",
+    id: "party",
+    progress: 0,
+    isDisabled: true,
+    isRelationDisabled: true,
+    type: "task"
   }
 ];
 
+// Columns configuration - show task names, dates, and dependencies (no action buttons)
+const cleanColumns: Column[] = [
+  {
+    Cell: TitleColumn,
+    width: 200,
+    title: "Task Name",
+    id: "name",
+  },
+  {
+    Cell: DateStartColumn,
+    width: 120,
+    title: "Start Date",
+    id: "start",
+  },
+  {
+    Cell: DateEndColumn,
+    width: 120,
+    title: "End Date", 
+    id: "end",
+  },
+  {
+    Cell: DependenciesColumn,
+    width: 150,
+    title: "Dependencies",
+    id: "dependencies",
+  }
+];
+
+// Helper function to fix parent-child relationships
+const fixParentChildRelationships = (tasks: readonly TaskOrEmpty[]): readonly TaskOrEmpty[] => {
+  const taskMap = new Map<string, TaskOrEmpty>();
+  tasks.forEach(task => taskMap.set(task.id, task));
+
+  const updatedTasks = [...tasks];
+
+  // Update parent bounds to encompass all children
+  const updateParentBounds = (parentId: string): void => {
+    const parent = taskMap.get(parentId);
+    if (!parent || parent.type === "empty") return;
+
+    const children = tasks.filter(t => t.parent === parentId && t.type !== "empty") as Task[];
+    if (children.length === 0) return;
+
+    const earliestStart = new Date(Math.min(...children.map(child => child.start.getTime())));
+    const latestEnd = new Date(Math.max(...children.map(child => child.end.getTime())));
+
+    const parentTask = parent as Task;
+    const currentStart = parentTask.start.getTime();
+    const currentEnd = parentTask.end.getTime();
+
+    // Only update if parent bounds are outside children bounds
+    if (earliestStart.getTime() < currentStart || latestEnd.getTime() > currentEnd) {
+      const updatedParent: Task = {
+        ...parentTask,
+        start: new Date(Math.min(earliestStart.getTime(), currentStart)),
+        end: new Date(Math.max(latestEnd.getTime(), currentEnd))
+      };
+
+      const parentIndex = updatedTasks.findIndex(t => t.id === parentId);
+      if (parentIndex >= 0) {
+        updatedTasks[parentIndex] = updatedParent;
+        taskMap.set(parentId, updatedParent);
+      }
+
+      // Recursively update grandparents
+      if (updatedParent.parent) {
+        updateParentBounds(updatedParent.parent);
+      }
+    }
+  };
+
+  // Find all parents and update their bounds
+  const parentIds = new Set<string>();
+  tasks.forEach(task => {
+    if (task.parent) {
+      parentIds.add(task.parent);
+    }
+  });
+
+  parentIds.forEach(parentId => updateParentBounds(parentId));
+
+  return updatedTasks;
+};
+
 const GanttDemo: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Day);
+  const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initialTasks);
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Week);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const handleTaskChange = (task: Task) => {
-    console.log("Task changed:", task);
-    const newTasks = tasks.map(t => t.id === task.id ? task : t);
-    setTasks(newTasks);
-  };
+  const onChangeTasks: OnChangeTasks = (nextTasks, action) => {
+    console.log("Task change action:", action.type, nextTasks);
+    
+    switch (action.type) {
+      case "delete_relation":
+        if (
+          window.confirm(
+            `Do you want to remove relation between ${action.payload.taskFrom.name} and ${action.payload.taskTo.name}?`
+          )
+        ) {
+          setTasks(nextTasks);
+        }
+        break;
 
-  const handleTaskDelete = (task: Task) => {
-    const conf = window.confirm("Are you sure about deleting " + task.name + " ?");
-    if (conf) {
-      setTasks(tasks.filter(t => t.id !== task.id));
+      case "delete_task":
+        if (window.confirm("Are you sure about deleting this task?")) {
+          setTasks(nextTasks);
+        }
+        break;
+
+      case "relation_change":
+        setTasks(nextTasks);
+        // Show user feedback
+        const message = `✅ Dependency created successfully!`;
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+          position: fixed; top: 20px; right: 20px; z-index: 1000;
+          background: #28a745; color: white; padding: 12px 20px;
+          border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          font-family: system-ui; font-size: 14px;
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => document.body.removeChild(notification), 3000);
+        break;
+
+      case "date_change":
+        console.log("Date change detected, updating tasks");
+        
+        // Fix parent-child relationships after date changes
+        const fixedTasks = fixParentChildRelationships(nextTasks);
+        setTasks(fixedTasks);
+        break;
+
+      case "progress_change":
+      case "move_task_before":
+      case "move_task_after": 
+      case "move_task_inside":
+        // These might also affect parent-child relationships
+        const fixedTasksOther = fixParentChildRelationships(nextTasks);
+        setTasks(fixedTasksOther);
+        break;
+
+      default:
+        console.log("Other task change:", action.type);
+        setTasks(nextTasks);
+        break;
     }
-    return conf;
-  };
-
-  const handleProgressChange = async (task: Task) => {
-    setTasks(tasks.map(t => t.id === task.id ? task : t));
-    console.log("Progress changed:", task);
   };
 
   const handleDblClick = (task: Task) => {
     alert("You clicked on " + task.name);
   };
 
-  const handleTaskClick = (task: Task) => {
+  const handleTaskClick = (task: TaskOrEmpty) => {
     console.log("Task clicked:", task);
-    setSelectedTask(task);
-  };
-
-  const handleExpanderClick = (task: Task) => {
-    setTasks(tasks.map(t => t.id === task.id ? task : t));
-    console.log("Expander clicked:", task);
-  };
-
-  const handleRelationChange: OnRelationChange = (
-    from: [Task, DateExtremity, number],
-    to: [Task, DateExtremity, number],
-    isOneDescendant: boolean
-  ) => {
-    const [fromTask, fromTarget] = from;
-    const [toTask, toTarget] = to;
-
-    if (isOneDescendant) {
-      console.log("Cannot create dependency between ancestor and descendant");
-      return;
+    if (task.type !== "empty") {
+      setSelectedTask(task as Task);
     }
-
-    const newDependency = {
-      sourceId: fromTask.id,
-      sourceTarget: fromTarget,
-      ownTarget: toTarget
-    };
-
-    // Add the dependency to the target task
-    const updatedTasks = tasks.map(task => {
-      if (task.id === toTask.id) {
-        const existingDependencies = task.dependencies || [];
-        // Check if dependency already exists
-        const dependencyExists = existingDependencies.some(dep => 
-          dep.sourceId === fromTask.id && 
-          dep.sourceTarget === fromTarget && 
-          dep.ownTarget === toTarget
-        );
-
-        if (!dependencyExists) {
-          return {
-            ...task,
-            dependencies: [...existingDependencies, newDependency]
-          };
-        }
-      }
-      return task;
-    });
-
-    setTasks(updatedTasks);
-    console.log(`Created dependency: ${fromTask.name} -> ${toTask.name}`);
-    
-    // Show user feedback
-    const message = `✅ Dependency created: "${fromTask.name}" → "${toTask.name}"`;
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed; top: 20px; right: 20px; z-index: 1000;
-      background: #28a745; color: white; padding: 12px 20px;
-      border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      font-family: system-ui; font-size: 14px;
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => document.body.removeChild(notification), 3000);
   };
+
 
   const addSubtask = () => {
     if (!selectedTask) {
@@ -357,9 +377,6 @@ const GanttDemo: React.FC = () => {
             value={viewMode} 
             onChange={(e) => setViewMode(e.target.value as ViewMode)}
           >
-            <option value={ViewMode.Hour}>Hour</option>
-            <option value={ViewMode.QuarterDay}>Quarter Day</option>
-            <option value={ViewMode.HalfDay}>Half Day</option>
             <option value={ViewMode.Day}>Day</option>
             <option value={ViewMode.Week}>Week</option>
             <option value={ViewMode.Month}>Month</option>
@@ -416,13 +433,12 @@ const GanttDemo: React.FC = () => {
         <Gantt
           tasks={tasks}
           viewMode={viewMode}
-          onDateChange={handleTaskChange}
-          onDelete={handleTaskDelete}
-          onProgressChange={handleProgressChange}
+          onChangeTasks={onChangeTasks}
           onDoubleClick={handleDblClick}
           onClick={handleTaskClick}
-          onExpanderClick={handleExpanderClick}
-          onRelationChange={handleRelationChange}
+          isMoveChildsWithParent={true}
+          isUpdateDisabledParentsOnChange={true}
+          columns={cleanColumns}
         />
       </div>
     </div>
