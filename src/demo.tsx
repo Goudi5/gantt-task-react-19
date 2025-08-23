@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Gantt } from './index';
-import { Task, ViewMode, Dependency, OnChangeTasks, TaskOrEmpty, Column } from './types/public-types';
+import { Task, ViewMode, OnChangeTasks, TaskOrEmpty, Column } from './types/public-types';
 import { TitleColumn, DateStartColumn, DateEndColumn, DependenciesColumn } from './index';
 
 // Sample tasks data with proper hierarchy using parent property (based on Storybook helper)
@@ -228,6 +228,7 @@ const GanttDemo: React.FC = () => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initialTasks);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Week);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedArrowKey, setSelectedArrowKey] = useState<string | null>(null);
 
   const onChangeTasks: OnChangeTasks = (nextTasks, action) => {
     console.log("Task change action:", action.type, nextTasks);
@@ -287,6 +288,27 @@ const GanttDemo: React.FC = () => {
         setTasks(nextTasks);
         break;
     }
+  };
+
+  const handleArrowSelect = (taskFrom: Task, taskTo: Task) => {
+    const arrowKey = `${taskFrom.id}-${taskTo.id}`;
+    setSelectedArrowKey(selectedArrowKey === arrowKey ? null : arrowKey);
+  };
+
+  const handleDeleteDependency = (taskFrom: Task, taskTo: Task) => {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === taskTo.id && task.dependencies) {
+        return {
+          ...task,
+          dependencies: task.dependencies.filter(
+            dep => dep.sourceId !== taskFrom.id
+          )
+        };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+    setSelectedArrowKey(null);
   };
 
   const handleDblClick = (task: Task) => {
@@ -436,6 +458,8 @@ const GanttDemo: React.FC = () => {
           onChangeTasks={onChangeTasks}
           onDoubleClick={handleDblClick}
           onClick={handleTaskClick}
+          onArrowSelect={handleArrowSelect}
+          onDeleteDependency={handleDeleteDependency}
           isMoveChildsWithParent={true}
           isUpdateDisabledParentsOnChange={true}
           columns={cleanColumns}

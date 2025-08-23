@@ -82,6 +82,9 @@ export type TaskGanttContentProps = {
   taskHalfHeight: number;
   ContextualPalette?: React.FC<TaskContextualPaletteProps>;
   TaskDependencyContextualPalette?: React.FC<TaskDependencyContextualPaletteProps>;
+  selectedArrowKey?: string | null;
+  onArrowSelect?: (taskFrom: Task, taskTo: Task) => void;
+  onDeleteDependency?: (taskFrom: Task, taskTo: Task) => void;
 };
 
 export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
@@ -124,6 +127,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   taskHeight,
   taskHalfHeight,
   visibleTasksMirror,
+  selectedArrowKey = null,
+  onArrowSelect = undefined,
+  onDeleteDependency = undefined,
 }) => {
   const [renderedTasks, renderedArrows, renderedSelectedTasks] = useMemo(() => {
     if (!renderedRowIndexes) {
@@ -131,6 +137,21 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
 
     const [start, end] = renderedRowIndexes;
+
+    const handleArrowClick = (
+      taskFrom: Task,
+      extremityFrom: DateExtremity,
+      taskTo: Task,
+      extremityTo: DateExtremity,
+      event: React.MouseEvent<SVGElement>
+    ) => {
+      if (onArrowClick) {
+        onArrowClick(taskFrom, extremityFrom, taskTo, extremityTo, event);
+      }
+      if (onArrowSelect) {
+        onArrowSelect(taskFrom, taskTo);
+      }
+    };
 
     const tasksRes: ReactNode[] = [];
     const arrowsRes: ReactNode[] = [];
@@ -307,6 +328,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               const containerWidth =
                 Math.max(fromX2, taskX2) - containerX + 300;
 
+              const arrowKey = `${source.id}-${taskId}`;
+              const isArrowSelected = selectedArrowKey === arrowKey;
+
               arrowsRes.push(
                 <svg
                   className="ArrowClassName"
@@ -336,8 +360,10 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                     isCritical={isCritical}
                     rtl={rtl}
                     onArrowDoubleClick={onArrowDoubleClick}
-                    onArrowClick={onArrowClick}
+                    onArrowClick={handleArrowClick}
                     handleFixDependency={handleFixDependency}
+                    isSelected={isArrowSelected}
+                    onDeleteDependency={onDeleteDependency}
                   />
                 </svg>
               );
@@ -393,6 +419,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               const containerX = Math.min(toX1, taskX1) - 300;
               const containerWidth = Math.max(toX2, taskX2) - containerX + 300;
 
+              const arrowKey = `${taskId}-${dependent.id}`;
+              const isArrowSelected = selectedArrowKey === arrowKey;
+
               arrowsRes.push(
                 <svg
                   x={containerX + (additionalLeftSpace || 0)}
@@ -421,8 +450,10 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                     isCritical={isCritical}
                     rtl={rtl}
                     onArrowDoubleClick={onArrowDoubleClick}
-                    onArrowClick={onArrowClick}
+                    onArrowClick={handleArrowClick}
                     handleFixDependency={handleFixDependency}
+                    isSelected={isArrowSelected}
+                    onDeleteDependency={onDeleteDependency}
                   />
                 </svg>
               );
@@ -445,7 +476,11 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     renderedRowIndexes,
     selectTaskOnMouseDown,
     selectedIdsMirror,
+    selectedArrowKey,
     visibleTasksMirror,
+    onArrowClick,
+    onArrowSelect,
+    onDeleteDependency,
   ]);
 
   return (

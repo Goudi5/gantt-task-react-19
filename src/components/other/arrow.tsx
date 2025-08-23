@@ -42,6 +42,8 @@ type ArrowProps = {
     event: React.MouseEvent<SVGElement>
   ) => void;
   handleFixDependency: (task: Task, delta: number) => void;
+  isSelected?: boolean;
+  onDeleteDependency?: (taskFrom: Task, taskTo: Task) => void;
 };
 
 const ArrowInner: React.FC<ArrowProps> = ({
@@ -73,6 +75,8 @@ const ArrowInner: React.FC<ArrowProps> = ({
   onArrowDoubleClick = undefined,
   onArrowClick = undefined,
   handleFixDependency,
+  isSelected = false,
+  onDeleteDependency = undefined,
 }) => {
   const indexFrom = useMemo(
     () => Math.floor(fromY / fullRowHeight),
@@ -95,8 +99,15 @@ const ArrowInner: React.FC<ArrowProps> = ({
         onArrowClick(taskFrom, extremityFrom, taskTo, extremityTo, event);
       }
     },
-    [taskFrom, taskTo, onArrowDoubleClick]
+    [taskFrom, taskTo, onArrowClick, extremityFrom, extremityTo]
   );
+
+  const onDeleteClick = useCallback((event: React.MouseEvent<SVGElement>) => {
+    event.stopPropagation();
+    if (onDeleteDependency) {
+      onDeleteDependency(taskFrom, taskTo);
+    }
+  }, [taskFrom, taskTo, onDeleteDependency]);
 
   const [path, trianglePoints] = useMemo(
     () =>
@@ -178,6 +189,10 @@ const ArrowInner: React.FC<ArrowProps> = ({
   );
 
   const color = useMemo(() => {
+    if (isSelected) {
+      return "#ff4444"; // Red colour for selected state
+    }
+
     if (isCritical) {
       return arrowCriticalColor;
     }
@@ -190,6 +205,7 @@ const ArrowInner: React.FC<ArrowProps> = ({
   }, [
     hasWarning,
     isCritical,
+    isSelected,
     arrowColor,
     arrowCriticalColor,
     arrowWarningColor,
@@ -209,6 +225,29 @@ const ArrowInner: React.FC<ArrowProps> = ({
 
         <polygon points={trianglePoints} />
       </g>
+
+      {isSelected && onDeleteDependency && (
+        <g
+          className={styles.deleteButton}
+          onClick={onDeleteClick}
+          style={{ cursor: "pointer" }}
+        >
+          <circle
+            cx={taskToFixerPosition}
+            cy={toY + taskHeight / 2}
+            r="10"
+            fill="#ff4444"
+            stroke="#ffffff"
+            strokeWidth="2"
+          />
+          <path
+            d={`M ${taskToFixerPosition - 5} ${toY + taskHeight / 2 - 5} L ${taskToFixerPosition + 5} ${toY + taskHeight / 2 + 5} M ${taskToFixerPosition + 5} ${toY + taskHeight / 2 - 5} L ${taskToFixerPosition - 5} ${toY + taskHeight / 2 + 5}`}
+            stroke="#ffffff"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </g>
+      )}
 
       {hasWarning && (
         <>

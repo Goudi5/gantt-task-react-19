@@ -16,3 +16,11 @@
   stroke: transparent;
   stroke-width: 8px;
 }
+
+.deleteButton {
+  cursor: pointer;
+}
+
+.deleteButton:hover circle {
+  fill: #ff6666;
+}

@@ -447,6 +447,24 @@ export interface EventOption {
    */
   onArrowDoubleClick?: OnArrowDoubleClick;
   /**
+   * Invokes on click on the relation arrow between tasks
+   */
+  onArrowClick?: (
+    taskFrom: Task,
+    extremityFrom: DateExtremity,
+    taskTo: Task,
+    extremityTo: DateExtremity,
+    event: React.MouseEvent<SVGElement>
+  ) => void;
+  /**
+   * Invokes when an arrow is selected for UI interaction
+   */
+  onArrowSelect?: (taskFrom: Task, taskTo: Task) => void;
+  /**
+   * Invokes when a dependency should be deleted via UI
+   */
+  onDeleteDependency?: (taskFrom: Task, taskTo: Task) => void;
+  /**
    * Invokes on click on fix element on the start of task
    */
   fixStartPosition?: FixPosition;

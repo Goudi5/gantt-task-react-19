@@ -203,6 +203,9 @@ export const Gantt: React.FC<GanttProps> = ({
                                               onAddTask = undefined,
                                               onAddTaskClick = undefined,
                                               onArrowDoubleClick: onArrowDoubleClickProp = undefined,
+                                              onArrowClick = undefined,
+                                              onArrowSelect = undefined,
+                                              onDeleteDependency = undefined,
                                               onChangeExpandState = undefined,
                                               onChangeTasks = undefined,
                                               onClick = undefined,
@@ -266,6 +269,8 @@ export const Gantt: React.FC<GanttProps> = ({
   const [sortedTasks, setSortedTasks] = useState<TaskOrEmpty[]>(() =>
     [...tasks].sort(sortTasks)
   );
+
+  const [selectedArrowKey, setSelectedArrowKey] = useState<string | null>(null);
 
   useEffect(() => {
     setSortedTasks([...tasks].sort(sortTasks));
@@ -1612,6 +1617,29 @@ export const Gantt: React.FC<GanttProps> = ({
     ]
   );
 
+  const handleArrowSelect = useCallback(
+    (taskFrom: Task, taskTo: Task) => {
+      const arrowKey = `${taskFrom.id}-${taskTo.id}`;
+      const newSelectedKey = selectedArrowKey === arrowKey ? null : arrowKey;
+      setSelectedArrowKey(newSelectedKey);
+      
+      if (onArrowSelect) {
+        onArrowSelect(taskFrom, taskTo);
+      }
+    },
+    [selectedArrowKey, onArrowSelect]
+  );
+
+  const handleDeleteDependency = useCallback(
+    (taskFrom: Task, taskTo: Task) => {
+      if (onDeleteDependency) {
+        onDeleteDependency(taskFrom, taskTo);
+      }
+      setSelectedArrowKey(null);
+    },
+    [onDeleteDependency]
+  );
+
   const handleAction = useHandleAction({
     checkTaskIdExists,
     childTasksMap,
@@ -1810,6 +1838,10 @@ export const Gantt: React.FC<GanttProps> = ({
       isShowDependencyWarnings,
       mapGlobalRowIndexToTask,
       onArrowDoubleClick,
+      onArrowClick,
+      onArrowSelect: handleArrowSelect,
+      onDeleteDependency: handleDeleteDependency,
+      selectedArrowKey,
       onClick: onClickTask,
       onDoubleClick,
       onFixDependencyPosition,
@@ -1859,6 +1891,10 @@ export const Gantt: React.FC<GanttProps> = ({
       mapGlobalRowIndexToTask,
       mapTaskToCoordinates,
       onArrowDoubleClick,
+      onArrowClick,
+      handleArrowSelect,
+      handleDeleteDependency,
+      selectedArrowKey,
       onChangeTooltipTask,
       onClick,
       onDoubleClick,
