@@ -54,7 +54,8 @@
   "dependencies": {
     "@floating-ui/dom": "1.1.1",
     "@floating-ui/react": "0.19.2",
-    "date-fns": "2.29.3"
+    "date-fns": "2.29.3",
+    "lucide-react": "^0.541.0"
   },
   "overrides": {
     "typescript": "^5.7.2"

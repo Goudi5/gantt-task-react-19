@@ -126,7 +126,7 @@ const defaultColors: ColorStyles = {
 };
 
 const defaultDateFormats: DateFormats = {
-  dateColumnFormat: "E, d MMMM yyyy",
+  dateColumnFormat: "MM/dd/yyyy",
   dayBottomHeaderFormat: "E, d",
   dayTopHeaderFormat: "E, d",
   hourBottomHeaderFormat: "HH",
@@ -155,7 +155,7 @@ const defaultDistances: Distances = {
   nestedTaskNameOffset: 20,
   relationCircleOffset: 10,
   relationCircleRadius: 5,
-  rowHeight: 50,
+  rowHeight: 40,
   taskWarningOffset: 35,
   titleCellWidth: 220
 };

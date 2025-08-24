@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { Plus, Trash2, Edit3, ChevronRight, ChevronDown, Circle } from "lucide-react";
 
 import {
   Distances,
@@ -14,12 +15,12 @@ import { initTasks, onAddTask, onEditTask } from "./helper";
 import "../dist/style.css";
 
 const icons: Icons = {
-  renderAddIcon: () => <>➕</>,
-  renderClosedIcon: () => <>📁</>,
-  renderDeleteIcon: () => <>➖</>,
-  renderEditIcon: () => <>🗃</>,
-  renderNoChildrenIcon: () => <>🥳</>,
-  renderOpenedIcon: () => <>📂</>,
+  renderAddIcon: () => <Plus size={16} color="#22c55e" />,
+  renderDeleteIcon: () => <Trash2 size={16} color="#ef4444" />,
+  renderEditIcon: () => <Edit3 size={16} color="#3b82f6" />,
+  renderClosedIcon: () => <ChevronRight size={16} color="#6b7280" />,
+  renderOpenedIcon: () => <ChevronDown size={16} color="#6b7280" />,
+  renderNoChildrenIcon: () => <Circle size={4} color="#d1d5db" />,
 };
 
 const distances: Partial<Distances> = {

@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { ChevronRight, ChevronDown, Circle } from "lucide-react";
 
 import { ColumnProps, Icons, TaskOrEmpty } from "../../../types/public-types";
 
@@ -11,14 +12,14 @@ const getExpanderSymbol = (
   icons: Partial<Icons> | undefined
 ) => {
   if (!hasChildren) {
-    return icons?.renderNoChildrenIcon ? icons.renderNoChildrenIcon(task) : "";
+    return icons?.renderNoChildrenIcon ? icons.renderNoChildrenIcon(task) : <Circle size={4} />;
   }
 
   if (isClosed) {
-    return icons?.renderClosedIcon ? icons.renderClosedIcon(task) : "⊞";
+    return icons?.renderClosedIcon ? icons.renderClosedIcon(task) : <ChevronRight size={16} />;
   }
 
-  return icons?.renderOpenedIcon ? icons.renderOpenedIcon(task) : "⊟";
+  return icons?.renderOpenedIcon ? icons.renderOpenedIcon(task) : <ChevronDown size={16} />;
 };
 
 export const TitleColumn: React.FC<ColumnProps> = (props) => {

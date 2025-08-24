@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Trash2 } from "lucide-react";
 
 import { ColumnProps } from "../../../types/public-types";
 
@@ -16,7 +17,7 @@ export const DeleteColumn: React.FC<ColumnProps> = (props) => {
     <button type="button" onClick={onClick} style={{
       "color": colors.barLabelColor
     }} className={styles.button}>
-      {icons?.renderDeleteIcon ? icons.renderDeleteIcon(task) : "-"}
+      {icons?.renderDeleteIcon ? icons.renderDeleteIcon(task) : <Trash2 size={16} />}
     </button>
   );
 };

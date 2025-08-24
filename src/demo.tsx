@@ -297,11 +297,11 @@ const GanttDemo: React.FC = () => {
 
   const handleDeleteDependency = (taskFrom: Task, taskTo: Task) => {
     const updatedTasks = tasks.map(task => {
-      if (task.id === taskTo.id && task.dependencies) {
+      if (task.type !== "empty" && task.id === taskTo.id && task.dependencies) {
         return {
           ...task,
           dependencies: task.dependencies.filter(
-            dep => dep.sourceId !== taskFrom.id
+            (dep: { sourceId: string }) => dep.sourceId !== taskFrom.id
           )
         };
       }
@@ -346,7 +346,7 @@ const GanttDemo: React.FC = () => {
     const newSubtaskId = `${parentId}.${maxSubtaskId + 1}`;
     
     const parentTask = tasks.find(t => t.id === parentId);
-    const startDate = new Date(parentTask?.start || new Date());
+    const startDate = new Date((parentTask && parentTask.type !== "empty" ? parentTask.start : new Date()) || new Date());
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 5); // Default 5 days duration
 

@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Plus } from "lucide-react";
 
 import { ColumnProps } from "../../../types/public-types";
 
@@ -24,7 +25,7 @@ export const AddColumn: React.FC<ColumnProps> = (props) => {
     <button type="button" onClick={onClick} style={{
       "color": colors.barLabelColor
     }} className={styles.button}>
-      {icons?.renderAddIcon ? icons.renderAddIcon(task) : "+"}
+      {icons?.renderAddIcon ? icons.renderAddIcon(task) : <Plus size={16} />}
     </button>
   );
 };

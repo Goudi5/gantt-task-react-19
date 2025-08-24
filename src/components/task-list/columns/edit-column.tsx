@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Edit3 } from "lucide-react";
 
 import { ColumnProps } from "../../../types/public-types";
 
@@ -16,7 +17,7 @@ export const EditColumn: React.FC<ColumnProps> = (props) => {
     <button type="button" onClick={onClick} style={{
       "color": colors.barLabelColor
     }} className={styles.button}>
-      {icons?.renderEditIcon ? icons.renderEditIcon(task) : "✎"}
+      {icons?.renderEditIcon ? icons.renderEditIcon(task) : <Edit3 size={16} />}
     </button>
   );
 };
