@@ -22,6 +22,7 @@ import { useOptimizedList } from "../../helpers/use-optimized-list";
 import styles from "./task-list.module.css";
 import { useTableListResize } from "../gantt/use-tablelist-resize";
 import { TaskListHeaderActionsProps } from "./TaskListHeaderActions";
+import { TaskListTopHeader } from "./task-list-top-header";
 
 // const SCROLL_DELAY = 25;
 
@@ -68,6 +69,7 @@ export type TaskListProps = {
   onScrollTableListContentVertically: (
     event: SyntheticEvent<HTMLDivElement>
   ) => void;
+  topHeaderContent?: React.ReactNode;
 } & TaskListHeaderActionsProps;
 
 const TaskListInner: React.FC<TaskListProps & TaskListHeaderActionsProps> = (
@@ -110,7 +112,8 @@ const TaskListInner: React.FC<TaskListProps & TaskListHeaderActionsProps> = (
     onScrollTableListContentVertically,
     onCollapseAll,
     onExpandFirstLevel,
-    onExpandAll
+    onExpandAll,
+    topHeaderContent
   }) => {
   // Manage the column and list table resizing
   const [
@@ -136,6 +139,14 @@ const TaskListInner: React.FC<TaskListProps & TaskListHeaderActionsProps> = (
           width: tableWidth
         }}
       >
+        <TaskListTopHeader
+          fontFamily={fontFamily}
+          fontSize={fontSize}
+          colors={colors}
+        >
+          {topHeaderContent}
+        </TaskListTopHeader>
+        
         <TaskListHeader
           headerHeight={distances.headerHeight}
           fontFamily={fontFamily}

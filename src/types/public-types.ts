@@ -628,6 +628,10 @@ export interface GanttProps extends EventOption, DisplayOption, StylingOption {
    */
   isAdjustToWorkingDates?: boolean;
   tasks: readonly TaskOrEmpty[];
+  /**
+   * Content to display in the top header above the table columns
+   */
+  topHeaderContent?: React.ReactNode;
 }
 
 export interface TaskListTableProps {

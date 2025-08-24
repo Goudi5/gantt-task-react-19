@@ -230,6 +230,7 @@ export const Gantt: React.FC<GanttProps> = ({
                                               rtl = false,
                                               tasks,
                                               timeStep = 300000,
+                                              topHeaderContent = undefined,
                                               viewDate,
                                               viewMode = ViewMode.Day
                                             }) => {
@@ -1956,7 +1957,8 @@ export const Gantt: React.FC<GanttProps> = ({
     onScrollTableListContentVertically: onScrollVertically,
     onCollapseAll,
     onExpandFirstLevel,
-    onExpandAll
+    onExpandAll,
+    topHeaderContent
   };
 
   const displayTable = !columnsProp || columnsProp.length > 0;
@@ -1968,15 +1970,53 @@ export const Gantt: React.FC<GanttProps> = ({
       ref={wrapperRef}
       data-testid={`gantt-main`}
       style={{
-        gridTemplateColumns: `${displayTable ? "max-content" : ""} auto`,
+        gridTemplateColumns: "1fr",
+        gridTemplateRows: topHeaderContent ? "auto auto" : "auto",
         background: colors.evenTaskBackgroundColor,
         color: colors.barLabelColor
       }}
     >
-      {/* {columns.length > 0 && <TaskList {...tableProps} />} */}
-      {displayTable && <TaskList {...tableProps} />}
+      {topHeaderContent && (
+        <div 
+          className={styles.topHeaderWrapper}
+          style={{
+            gridColumn: "1 / -1"
+          }}
+        >
+          <div 
+            className={styles.topHeaderContent}
+            style={{
+              background: "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+              borderBottom: "1px solid rgba(229, 231, 235, 0.6)",
+              backdropFilter: "blur(8px)",
+              padding: "12px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              minHeight: "48px",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+              fontFamily: fontFamily,
+              fontSize: fontSize,
+              color: colors.barLabelColor,
+              gap: "16px"
+            }}
+          >
+            {topHeaderContent}
+          </div>
+        </div>
+      )}
+      
+      <div 
+        className={styles.ganttContent}
+        style={{
+          display: "grid",
+          gridTemplateColumns: `${displayTable ? "max-content" : ""} auto`,
+        }}
+      >
+        {/* {columns.length > 0 && <TaskList {...tableProps} />} */}
+        {displayTable && <TaskList {...{...tableProps, topHeaderContent: undefined}} />}
 
-      <TaskGantt
+        <TaskGantt
         barProps={barProps}
         calendarProps={calendarProps}
         distances={distances}
@@ -1991,6 +2031,7 @@ export const Gantt: React.FC<GanttProps> = ({
         onScrollGanttContentVertically={onScrollVertically}
         colors={colors}
       />
+      </div>
 
       {tooltipTaskFromMap && (
         <Tooltip

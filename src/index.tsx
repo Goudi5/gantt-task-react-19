@@ -9,6 +9,8 @@ export { DeleteColumn } from "./components/task-list/columns/delete-column";
 export { DependenciesColumn } from "./components/task-list/columns/dependencies-column";
 export { TitleColumn } from "./components/task-list/columns/title-column";
 
+export { TaskListTopHeader } from "./components/task-list/task-list-top-header";
+
 export * from "./context-menu-options";
 
 export * from "./constants";
