@@ -12,6 +12,16 @@
   opacity: 0.3;
 }
 
+.selected {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.06) 100%);
+  border-left: 3px solid #3b82f6;
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.selected .taskListCell {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
 .taskListCell {
   box-sizing: border-box;
   display: table-cell;
@@ -19,7 +29,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 5px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  transition: all 0.2s ease-in-out;
 }
 .taskListCellInner {
   display: flex;

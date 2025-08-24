@@ -8,11 +8,23 @@
 }
 
 .taskListExpander {
-  opacity: 0.9;
-  font-size: 18px;
+  opacity: 0.7;
+  font-size: 16px;
   user-select: none;
   cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+  margin-right: 4px;
+}
+
+.taskListExpander:hover {
+  opacity: 1;
+  background-color: rgba(107, 114, 128, 0.1);
+  transform: scale(1.1);
 }
 
 .taskListEmptyExpander {
@@ -24,4 +36,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-weight: 500;
+  color: rgba(17, 24, 39, 0.9);
+  line-height: 1.4;
 }

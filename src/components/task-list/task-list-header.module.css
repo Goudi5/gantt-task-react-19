@@ -1,8 +1,10 @@
 .ganttTable_Header {
   display: table;
-  border-bottom: #e6e4e4 3px solid;
-  border-top: #e6e4e4 3px solid;
+  border-bottom: 2px solid rgba(229, 231, 235, 0.8);
+  border-top: 2px solid rgba(229, 231, 235, 0.8);
   box-sizing: content-box;
+  background: linear-gradient(180deg, rgba(249, 250, 251, 0.8) 0%, rgba(243, 244, 246, 0.6) 100%);
+  backdrop-filter: blur(8px);
 }
 
 .ganttTable_HeaderSeparator {
@@ -19,7 +21,10 @@
 }
 
 .ganttTable_HeaderTitle {
-
+  font-weight: 600;
+  color: rgba(55, 65, 81, 0.9);
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
 }
 
 .ganttTable_HeaderItem {
@@ -50,6 +55,10 @@
 }
 
 .resizer:hover {
-  background-color: grey;
+  background-color: rgba(59, 130, 246, 0.6);
+}
+
+.resizer:active {
+  background-color: rgba(59, 130, 246, 0.8);
 }
 

@@ -300,7 +300,7 @@ const TaskListTableRowInner: React.FC<TaskListTableRowProps> =
 
   return (
     <div
-      className={`${styles.taskListTableRow} ${isCut ? styles.cut : ""}`}
+      className={`${styles.taskListTableRow} ${isCut ? styles.cut : ""} ${isSelected ? styles.selected : ""}`}
       onMouseDown={onRootMouseDown}
       style={{
         height: fullRowHeight,
