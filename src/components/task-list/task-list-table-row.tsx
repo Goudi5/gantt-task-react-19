@@ -314,15 +314,11 @@ const TaskListTableRowInner: React.FC<TaskListTableRowProps> =
       onDragEnd={handleDragEnd}
     >
       {columns.map((column, index) => {
-        const { Cell, width }= column;
+        const { Cell } = column;
         // noinspection TypeScriptValidateTypes
         return (
           <div
             className={styles.taskListCell}
-            style={{
-              minWidth: width,
-              maxWidth: width,
-            }}
             key={index}
           >
             <div

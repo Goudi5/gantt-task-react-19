@@ -1,3 +1,5 @@
 .taskListWrapper {
-  display: table;
+  display: grid;
+  grid-template-columns: var(--grid-template-columns);
+  gap: 0;
 }

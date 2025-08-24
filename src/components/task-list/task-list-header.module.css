@@ -1,5 +1,6 @@
 .ganttTable_Header {
-  display: table;
+  display: grid;
+  grid-template-columns: var(--grid-template-columns);
   border-bottom: 2px solid rgba(229, 231, 235, 0.8);
   border-top: 2px solid rgba(229, 231, 235, 0.8);
   box-sizing: content-box;
@@ -7,10 +8,8 @@
   backdrop-filter: blur(8px);
 }
 
-.ganttTable_HeaderSeparator {
-  border-right: 1px solid rgb(196, 196, 196);
-  opacity: 1;
-  margin-left: -2px;
+.ganttTable_HeaderWithSeparator {
+  border-left: 1px solid rgb(196, 196, 196);
 }
 
 
@@ -33,9 +32,8 @@
   overflow: hidden;
   padding-left: 5px;
   padding-right: 5px;
-  display: table-cell;
-  vertical-align: -webkit-baseline-middle;
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
 }
 
 

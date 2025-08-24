@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from "react";
+import React, { memo } from "react";
 
 import { TaskListHeaderProps } from "../../types/public-types";
 
@@ -18,6 +18,9 @@ const TaskListHeaderDefaultInner: React.FC<TaskListHeaderProps & TaskListHeaderA
     onExpandAll,
     colors
   } = props;
+  
+  const gridTemplateColumns = columns.map(col => `${col.width}px`).join(' ');
+  
   return (
     <div
       className={styles.ganttTable_Header}
@@ -25,59 +28,45 @@ const TaskListHeaderDefaultInner: React.FC<TaskListHeaderProps & TaskListHeaderA
         height: headerHeight,
         fontFamily: fontFamily,
         fontSize: fontSize,
-      }}
+        '--grid-template-columns': gridTemplateColumns,
+      } as React.CSSProperties & { '--grid-template-columns': string }}
     >
-      {columns.map(({ title, width, canResize }, index) => {
+      {columns.map(({ title, canResize }, index) => {
         return (
-          <Fragment key={index}>
-            {index > 0 && (
+          <div
+            key={index}
+            data-testid={`table-column-header-${title}`}
+            className={`${styles.ganttTable_HeaderItem} ${index > 0 ? styles.ganttTable_HeaderWithSeparator : ''}`}
+          >
+            <div className={styles.ganttTable_HeaderContent}>
+              <div className={styles.ganttTable_HeaderTitle} >
+                {title}
+              </div>
+
+              {title === "Name" && <TaskListHeaderActions
+                onCollapseAll={onCollapseAll}
+                onExpandFirstLevel={onExpandFirstLevel}
+                onExpandAll={onExpandAll}
+                colors={colors} />}
+            </div>
+
+            {canResizeColumns && canResize !== false && (
               <div
-                className={styles.ganttTable_HeaderSeparator}
-                style={{
-                  height: headerHeight * 0.5,
-                  marginTop: headerHeight * 0.2
+                data-testid={`table-column-header-resize-handle-${title}`}
+                className={styles.resizer}
+                onMouseDown={event => {
+                  onColumnResizeStart(index, event.clientX);
+                }}
+                onTouchStart={event => {
+                  const firstTouch = event.touches[0];
+
+                  if (firstTouch) {
+                    onColumnResizeStart(index, firstTouch.clientX);
+                  }
                 }}
               />
             )}
-
-            <div
-              data-testid={`table-column-header-${title}`}
-              className={styles.ganttTable_HeaderItem}
-              style={{
-                minWidth: width,
-                maxWidth: width
-              }}
-            >
-              <div className={styles.ganttTable_HeaderContent}>
-                <div className={styles.ganttTable_HeaderTitle} >
-                  {title}
-                </div>
-
-                {title === "Name" && <TaskListHeaderActions
-                  onCollapseAll={onCollapseAll}
-                  onExpandFirstLevel={onExpandFirstLevel}
-                  onExpandAll={onExpandAll}
-                  colors={colors} />}
-              </div>
-
-              {canResizeColumns && canResize !== false && (
-                <div
-                  data-testid={`table-column-header-resize-handle-${title}`}
-                  className={styles.resizer}
-                  onMouseDown={event => {
-                    onColumnResizeStart(index, event.clientX);
-                  }}
-                  onTouchStart={event => {
-                    const firstTouch = event.touches[0];
-
-                    if (firstTouch) {
-                      onColumnResizeStart(index, firstTouch.clientX);
-                    }
-                  }}
-                />
-              )}
-            </div>
-          </Fragment>
+          </div>
         );
       })}
     </div>

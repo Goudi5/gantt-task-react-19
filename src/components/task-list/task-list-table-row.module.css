@@ -1,8 +1,10 @@
 .taskListTableRow {
   position: relative;
-  display: table-row;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
   text-overflow: ellipsis;
-  cursor:grab
+  cursor: grab;
 }
 .taskListTableRowGrabbing {
   cursor:grabbing
@@ -24,8 +26,8 @@
 
 .taskListCell {
   box-sizing: border-box;
-  display: table-cell;
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

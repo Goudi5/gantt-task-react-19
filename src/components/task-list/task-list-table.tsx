@@ -145,13 +145,16 @@ const TaskListTableDefaultInner: React.FC<TaskListTableProps> = ({
     draggedTask,
   ]);
 
+  const gridTemplateColumns = columns.map(col => `${col.width}px`).join(' ');
+
   return (
     <div
       className={styles.taskListWrapper}
       style={{
         fontFamily: fontFamily,
         fontSize: fontSize,
-      }}
+        '--grid-template-columns': gridTemplateColumns,
+      } as React.CSSProperties & { '--grid-template-columns': string }}
     >
       {renderedListWithOffset}
     </div>
