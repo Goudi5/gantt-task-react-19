@@ -682,6 +682,7 @@ const GanttDemo: React.FC = () => {
             { mode: ViewMode.Day, icon: Clock, label: 'Day' },
             { mode: ViewMode.Week, icon: Calendar, label: 'Week' },
             { mode: ViewMode.Month, icon: Grid, label: 'Month' },
+            { mode: ViewMode.QuarterYear, icon: BarChart3, label: 'Quarter' },
             { mode: ViewMode.Year, icon: BarChart3, label: 'Year' }
           ].map(({ mode, icon: Icon, label }) => (
             <button

@@ -127,8 +127,8 @@ const defaultColors: ColorStyles = {
 
 const defaultDateFormats: DateFormats = {
   dateColumnFormat: "MM/dd/yyyy",
-  dayBottomHeaderFormat: "E, d",
-  dayTopHeaderFormat: "E, d",
+  dayBottomHeaderFormat: "d E",
+  dayTopHeaderFormat: "d E",
   hourBottomHeaderFormat: "HH",
   monthBottomHeaderFormat: "LLL",
   monthTopHeaderFormat: "LLLL"

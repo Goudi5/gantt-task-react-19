@@ -55,7 +55,7 @@ This is a React TypeScript library that provides an interactive Gantt chart comp
 - **Vite** for bundling with React plugin
 - **ESM and UMD** output formats
 - **TypeScript declarations** generated separately
-- **Peer dependencies**: React 18+, MUI components for enhanced UI elements
+- **Peer dependencies**: React 19+, MUI components for enhanced UI elements
 - **CSS Modules** for component styling with `.module.css` pattern
 
 ### Testing Strategy
@@ -70,3 +70,16 @@ This is a React TypeScript library that provides an interactive Gantt chart comp
 - **Date Handling**: Custom holiday detection, date rounding, and working day calculations
 - **Context Menu**: Extensible context menu with custom action definitions
 - **Rendering**: Custom header renderers, tooltip content, and task list components
+
+## Development Notes
+
+### Key Dependencies
+- **@floating-ui/react**: For tooltip positioning and floating elements
+- **date-fns**: Date manipulation and formatting utilities
+- **lucide-react**: Modern icon library for UI elements
+
+### Project Structure Highlights
+- **CSS Modules**: All component styles use `.module.css` for scoped styling
+- **Hook-based Architecture**: Extensive use of custom hooks for state management (`use-*` files)
+- **Type Safety**: Comprehensive TypeScript definitions with strict configuration
+- **Optimised Rendering**: Performance-focused with memoisation and virtualisation patterns

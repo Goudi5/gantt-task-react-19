@@ -89,7 +89,13 @@ export const defaultRenderBottomHeader = (
       }
 
     case ViewMode.Week:
-      return `W${getWeekNumberISO8601(date)}`;
+      try {
+        return format(date, "d MMM", {
+          locale: dateSetup.dateLocale,
+        });
+      } catch (e) {
+        return `${date.getDate()} ${date.toLocaleString("default", { month: "short" })}`;
+      }
 
     case ViewMode.Day:
     case ViewMode.TwoDays:
@@ -103,6 +109,15 @@ export const defaultRenderBottomHeader = (
 
     case ViewMode.QuarterDay:
     case ViewMode.HalfDay:
+    case ViewMode.QuarterYear:
+      try {
+        return format(date, "MMM", {
+          locale: dateSetup.dateLocale,
+        });
+      } catch (e) {
+        return date.toLocaleString("default", { month: "short" });
+      }
+
     case ViewMode.Hour:
       try {
         return format(date, dateSetup.dateFormats.hourBottomHeaderFormat, {
