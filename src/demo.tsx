@@ -219,8 +219,8 @@ const initialTasks: TaskOrEmpty[] = [
     name: "Party Time",
     id: "party",
     progress: 0,
-    isDisabled: true,
-    isRelationDisabled: true,
+    isDisabled: false,
+    isRelationDisabled: false,
     type: "task"
   }
 ];
