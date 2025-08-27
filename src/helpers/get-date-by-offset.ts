@@ -1,9 +1,9 @@
-import addDays from "date-fns/addDays";
-import addHours from "date-fns/addHours";
-import addMonths from "date-fns/addMonths";
-import addWeeks from "date-fns/addWeeks";
-import addYears from "date-fns/addYears";
-import addQuarters from "date-fns/addQuarters";
+import { addDays } from "date-fns/addDays";
+import { addHours } from "date-fns/addHours";
+import { addMonths } from "date-fns/addMonths";
+import { addWeeks } from "date-fns/addWeeks";
+import { addYears } from "date-fns/addYears";
+import { addQuarters } from "date-fns/addQuarters";
 
 import {ViewMode} from "../types/public-types";
 

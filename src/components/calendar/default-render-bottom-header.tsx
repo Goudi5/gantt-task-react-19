@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 
 import { DateSetup, ViewMode } from "../../types/public-types";
 
