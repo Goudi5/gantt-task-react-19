@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Search, Filter, Download, Plus, Calendar, Clock, Grid, BarChart3, Indent, Outdent, Flag } from "lucide-react";
+import { Search, Filter, Plus, Calendar, Clock, Grid, BarChart3, Indent, Outdent, Flag, Route } from "lucide-react";
 import { Gantt } from './index';
 import { Task, ViewMode, OnChangeTasks, TaskOrEmpty, Column } from './types/public-types';
 import { TitleColumn, DateStartColumn, DateEndColumn, DependenciesColumn, ColumnProps } from './index';
@@ -329,6 +329,7 @@ const GanttDemo: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showColumnFilter, setShowColumnFilter] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>(["name", "start", "end", "progress", "assignees", "dependencies"]);
+  const [showCriticalPath, setShowCriticalPath] = useState(false);
 
   const onChangeTasks: OnChangeTasks = (nextTasks, action) => {
     console.log("Task change action:", action.type, nextTasks);
@@ -811,6 +812,31 @@ const GanttDemo: React.FC = () => {
           </button>
         </div>
 
+        {/* Critical Path Toggle */}
+        <button 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '8px 12px',
+            border: showCriticalPath ? '1px solid #dc2626' : '1px solid #e5e7eb',
+            borderRadius: '6px',
+            background: showCriticalPath ? '#fef2f2' : 'white',
+            fontSize: '0.875rem',
+            cursor: 'pointer',
+            color: showCriticalPath ? '#dc2626' : '#374151',
+            fontWeight: showCriticalPath ? '500' : '400',
+            height: '36px',
+            boxSizing: 'border-box',
+            transition: 'all 0.2s ease'
+          }}
+          onClick={() => setShowCriticalPath(!showCriticalPath)}
+          title={showCriticalPath ? "Hide critical path" : "Show critical path"}
+        >
+          <Route size={14} />
+          Critical Path
+        </button>
+
         {/* Divider */}
         <div style={{ height: '36px', width: '1px', background: '#e5e7eb', margin: '0 4px' }}></div>
 
@@ -891,28 +917,6 @@ const GanttDemo: React.FC = () => {
             </div>
           )}
         </div>
-        
-        <button 
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '8px 12px',
-            border: '1px solid #e5e7eb',
-            borderRadius: '6px',
-            background: 'white',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            color: '#374151',
-            fontWeight: '400',
-            height: '36px',
-            boxSizing: 'border-box'
-          }}
-          onClick={() => alert('Export clicked - future functionality!')}
-        >
-          <Download size={14} />
-          Export
-        </button>
       </div>
     </>
   );
@@ -973,6 +977,7 @@ const GanttDemo: React.FC = () => {
           onDeleteDependency={handleDeleteDependency}
           isMoveChildsWithParent={true}
           isUpdateDisabledParentsOnChange={true}
+          isShowCriticalPath={showCriticalPath}
           columns={getFilteredColumns()}
           topHeaderContent={topHeaderContent}
         />
