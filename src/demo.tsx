@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Search, Filter, Plus, Calendar, Clock, Grid, BarChart3, Indent, Outdent, Flag, Route } from "lucide-react";
+import { Search, Filter, Plus, Calendar, Clock, Grid, BarChart3, Indent, Outdent, Flag, Route, ChevronDown, FolderOpen, CheckSquare } from "lucide-react";
 import { Gantt } from './index';
 import { Task, ViewMode, OnChangeTasks, TaskOrEmpty, Column } from './types/public-types';
 import { TitleColumn, DateStartColumn, DateEndColumn, DependenciesColumn, ColumnProps } from './index';
@@ -330,6 +330,25 @@ const GanttDemo: React.FC = () => {
   const [showColumnFilter, setShowColumnFilter] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>(["name", "start", "end", "progress", "assignees", "dependencies"]);
   const [showCriticalPath, setShowCriticalPath] = useState(false);
+  const [showAddDropdown, setShowAddDropdown] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('[data-add-dropdown]')) {
+        setShowAddDropdown(false);
+      }
+    };
+
+    if (showAddDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAddDropdown]);
 
   const onChangeTasks: OnChangeTasks = (nextTasks, action) => {
     console.log("Task change action:", action.type, nextTasks);
@@ -469,6 +488,31 @@ const GanttDemo: React.FC = () => {
     };
 
     setTasks([...tasks, newMilestone]);
+  };
+
+  const addProject = () => {
+    const projectName = prompt("Enter project name:");
+    if (!projectName) return;
+
+    const maxTaskId = Math.max(0, ...tasks.map(t => parseInt(t.id.split('.')[0])));
+    const newProjectId = `project-${maxTaskId + 1}`;
+
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 30); // Default 30 days duration for projects
+
+    const newProject: Task = {
+      id: newProjectId,
+      name: projectName,
+      start: startDate,
+      end: endDate,
+      progress: 0,
+      type: "project",
+      isDisabled: false,
+      hideChildren: false,
+    };
+
+    setTasks([...tasks, newProject]);
   };
 
   const indentTask = () => {
@@ -715,8 +759,8 @@ const GanttDemo: React.FC = () => {
       </div>
       
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        {/* Task Creation */}
-        <div style={{ display: 'flex', gap: '4px' }}>
+        {/* Task Creation - Dropdown */}
+        <div style={{ position: 'relative', display: 'inline-block' }} data-add-dropdown>
           <button 
             style={{
               display: 'flex',
@@ -731,37 +775,112 @@ const GanttDemo: React.FC = () => {
               cursor: 'pointer',
               fontWeight: '400',
               height: '36px',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              transition: 'all 0.2s ease'
             }}
-            onClick={addTask}
-            title="Add new task"
+            onClick={() => setShowAddDropdown(!showAddDropdown)}
+            title="Add new item"
           >
             <Plus size={14} />
-            Task
+            Add
+            <ChevronDown size={14} style={{ 
+              transform: showAddDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease'
+            }} />
           </button>
           
-          <button 
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '8px 12px',
+          {showAddDropdown && (
+            <div style={{
+              position: 'absolute',
+              top: '38px',
+              left: '0',
+              background: 'white',
               border: '1px solid #e5e7eb',
               borderRadius: '6px',
-              background: 'white',
-              color: '#374151',
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              fontWeight: '400',
-              height: '36px',
-              boxSizing: 'border-box'
-            }}
-            onClick={addMilestone}
-            title="Add milestone"
-          >
-            <Flag size={14} />
-            Milestone
-          </button>
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              zIndex: 1000,
+              minWidth: '150px',
+              overflow: 'hidden'
+            }}>
+              <button
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#374151',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onClick={() => {
+                  addProject();
+                  setShowAddDropdown(false);
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <FolderOpen size={16} />
+                Project
+              </button>
+              
+              <button
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#374151',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onClick={() => {
+                  addTask();
+                  setShowAddDropdown(false);
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <CheckSquare size={16} />
+                Task
+              </button>
+              
+              <button
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#374151',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onClick={() => {
+                  addMilestone();
+                  setShowAddDropdown(false);
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <Flag size={16} />
+                Milestone
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Indent/Outdent Controls */}
