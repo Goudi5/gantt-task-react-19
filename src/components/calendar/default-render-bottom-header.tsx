@@ -2,8 +2,6 @@ import type { ReactNode } from "react";
 
 import format from "date-fns/format";
 
-import { getWeekNumberISO8601 } from "../../helpers/date-helper";
-
 import { DateSetup, ViewMode } from "../../types/public-types";
 
 export const defaultRenderBottomHeader = (
